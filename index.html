@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IFM Lost &amp; Found — Sign In</title>
+  <meta name="description" content="Sign in to the IFM Lost &amp; Found Management System." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    :root {
+      --primary: #175883; --primary-dark: #104163;
+      --primary-glow: rgba(23,88,131,0.16);
+      --gold: #c8a84b;
+      --bg: #f0f4f8;
+      --card-bg: rgba(255,255,255,0.94);
+      --input-bg: #ffffff; --input-border: #dde3eb;
+      --text: #1e293b; --muted: #64748b;
+      --err-bg: rgba(239,68,68,0.08); --err-border: #fca5a5; --err-text: #b91c1c;
+      --ok-bg: rgba(16,185,129,0.1); --ok-border: #6ee7b7; --ok-text: #065f46;
+      --shadow: 0 20px 60px rgba(23,88,131,0.13);
+    }
+    [data-theme="dark"] {
+      --bg: #0c1929; --card-bg: rgba(15,31,50,0.96);
+      --input-bg: #111f30; --input-border: #1e3650;
+      --text: #e8f0fe; --muted: #7fa8cc;
+      --shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;transition:background .3s,color .3s;}
+
+    /* Top bar */
+    .topbar{background:#0b2a45;padding:5px 24px;display:flex;justify-content:space-between;align-items:center;}
+    .topbar span{color:#7aafd4;font-size:11px;}
+    .topbar-right{display:flex;gap:16px;}
+    .topbar-right a{color:#7aafd4;font-size:11px;text-decoration:none;}
+    .topbar-right a:hover{color:#fff;}
+
+    /* Header */
+    .header{background:var(--primary);border-bottom:4px solid var(--gold);padding:12px 24px;display:flex;align-items:center;gap:14px;}
+    .logo-circle{width:52px;height:52px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:3px;flex-shrink:0;}
+    .logo-circle img{width:100%;height:100%;object-fit:contain;}
+    .header-title h1{color:#fff;font-size:16px;font-weight:700;}
+    .header-title p{color:#b8d0e8;font-size:11px;margin-top:2px;}
+    .header-right{margin-left:auto;}
+    .theme-btn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:6px 14px;border-radius:999px;cursor:pointer;font-size:12px;font-family:inherit;font-weight:600;display:flex;align-items:center;gap:6px;transition:background .2s;}
+    .theme-btn:hover{background:rgba(255,255,255,0.2);}
+
+    /* Main */
+    .main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 16px;background:linear-gradient(135deg,var(--bg) 0%,#dde8f5 100%);transition:background .3s;}
+    [data-theme="dark"] .main{background:linear-gradient(135deg,#0c1929 0%,#071018 100%);}
+
+    /* Card */
+    .login-card{background:var(--card-bg);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(23,88,131,0.12);border-radius:24px;box-shadow:var(--shadow);padding:44px 48px;width:100%;max-width:470px;transition:background .3s;animation:fadeUp .45s cubic-bezier(.22,1,.36,1) both;}
+    [data-theme="dark"] .login-card{border-color:rgba(255,255,255,0.06);}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+    /* Logo block */
+    .card-logo{text-align:center;margin-bottom:24px;}
+    .card-logo-badge{overflow:hidden;width:80px;height:80px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
+    .card-logo-badge img{width:100%;height:100%;object-fit:contain;}
+    .card-logo h2{font-size:20px;font-weight:800;color:var(--primary);}
+    [data-theme="dark"] .card-logo h2{color:#7dc1f5;}
+    .card-logo p{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5;}
+
+    /* Role tabs */
+    .role-tabs{display:flex;background:var(--input-bg);border:1.5px solid var(--input-border);border-radius:12px;padding:4px;gap:4px;margin-bottom:22px;}
+    .role-tab{flex:1;padding:9px 12px;border:none;border-radius:9px;background:transparent;color:var(--muted);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s;}
+    .role-tab.active{background:var(--primary);color:#fff;box-shadow:0 2px 8px var(--primary-glow);}
+    .role-tab:not(.active):hover{background:var(--primary-glow);color:var(--primary);}
+
+    /* Auth tabs (login / register) */
+    .auth-tabs{display:flex;border-bottom:2px solid var(--input-border);margin-bottom:20px;gap:0;}
+    .auth-tab{flex:1;padding:9px;background:none;border:none;color:var(--muted);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;}
+    .auth-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
+    [data-theme="dark"] .auth-tab.active{color:#7dc1f5;border-bottom-color:#7dc1f5;}
+
+    /* Panels */
+    .panel{display:none;} .panel.active{display:block;}
+    .panel-title{font-size:15px;font-weight:700;text-align:center;margin-bottom:6px;}
+    .panel-hint{font-size:13px;color:var(--muted);text-align:center;margin-bottom:18px;line-height:1.6;}
+
+    /* Divider */
+    .divider{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--input-border);}
+    .divider span{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.5px;}
+
+    /* Form */
+    .form-group{margin-bottom:14px;}
+    .form-label{display:block;font-size:13px;font-weight:600;margin-bottom:5px;}
+    .input-wrap{position:relative;}
+    .input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:16px;pointer-events:none;}
+    .form-input{width:100%;padding:11px 14px 11px 40px;background:var(--input-bg);border:1.5px solid var(--input-border);border-radius:12px;color:var(--text);font-family:inherit;font-size:14px;transition:border-color .2s,box-shadow .2s;outline:none;}
+    .form-input::placeholder{color:#94a3b8;}
+    .form-input:focus{border-color:var(--primary);box-shadow:0 0 0 4px var(--primary-glow);}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .pw-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0;line-height:1;}
+    .pw-toggle:hover{color:var(--primary);}
+
+    /* Submit */
+    .submit-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--primary),#1e7fc4);color:#fff;border:none;border-radius:12px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.5px;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;box-shadow:0 4px 14px var(--primary-glow);margin-top:6px;}
+    .submit-btn:hover{background:linear-gradient(135deg,var(--primary-dark),var(--primary));transform:translateY(-1px);box-shadow:0 8px 20px var(--primary-glow);}
+    .submit-btn:active{transform:translateY(0);}
+
+    /* Links */
+    .text-link{background:none;border:none;color:var(--primary);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;text-decoration:underline;padding:0;}
+    [data-theme="dark"] .text-link{color:#7dc1f5;}
+    .link-row{text-align:center;margin-top:16px;font-size:13px;color:var(--muted);}
+
+    /* OTP */
+    .otp-grid{display:flex;gap:8px;justify-content:center;margin-bottom:18px;}
+    .otp-box{width:44px;height:52px;border:1.5px solid var(--input-border);border-radius:12px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:20px;font-weight:700;text-align:center;outline:none;transition:border-color .2s,box-shadow .2s;}
+    .otp-box:focus{border-color:var(--primary);box-shadow:0 0 0 4px var(--primary-glow);}
+
+    /* Alert */
+    .alert{display:none;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;font-size:13px;margin-bottom:14px;animation:fadeIn .25s ease;}
+    .alert.show{display:flex;}
+    .alert-error{background:var(--err-bg);border:1px solid var(--err-border);color:var(--err-text);}
+    .alert-success{background:var(--ok-bg);border:1px solid var(--ok-border);color:var(--ok-text);}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+
+    /* Footer */
+    .footer{background:#0b2a45;color:#7aafd4;font-size:11px;text-align:center;padding:9px;border-top:3px solid var(--gold);}
+
+    @media(max-width:520px){.login-card{padding:32px 20px;}.form-row{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <span>ifm.ac.tz &mdash; Lost &amp; Found Portal</span>
+  <div class="topbar-right">
+    <a href="https://mail.ifm.ac.tz" target="_blank">Student Mail</a>
+    <a href="https://elearning.ifm.ac.tz" target="_blank">e-Learning</a>
+    <a href="https://ems.ifm.ac.tz" target="_blank">EMS</a>
+  </div>
+</div>
+
+<div class="header">
+  <div class="logo-circle"><img src="logo.png" alt="IFM Logo" /></div>
+  <div class="header-title">
+    <h1>Lost &amp; Found Management System</h1>
+    <p>Institute of Finance Management &mdash; Dar es Salaam</p>
+  </div>
+  <div class="header-right">
+    <button class="theme-btn" onclick="toggleTheme()">
+      <i class="ti ti-moon" id="themeIcon"></i>
+      <span id="themeLabel">Dark mode</span>
+    </button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="login-card">
+
+    <!-- Logo -->
+    <div class="card-logo">
+      <div class="card-logo-badge"><img src="logo.png" alt="IFM Logo" /></div>
+      <h2>LFMS</h2>
+      <p>Lost &amp; Found Management System</p>
+    </div>
+
+    <!-- Role tabs -->
+    <div class="role-tabs">
+      <button class="role-tab active" id="roleStudent" onclick="selectRole('student')">
+        <i class="ti ti-school"></i> Student
+      </button>
+      <button class="role-tab" id="roleAdmin" onclick="selectRole('admin')">
+        <i class="ti ti-shield-check"></i> Administrator
+      </button>
+    </div>
+
+    <!-- ══════════════════════════════ STUDENT ══════════════════════════════ -->
+    <div id="studentSection">
+      <!-- Login / Register tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" onclick="switchAuth('login')">Sign In</button>
+        <button class="auth-tab" id="tabRegister" onclick="switchAuth('register')">Register</button>
+      </div>
+
+      <!-- Student Login -->
+      <div class="panel active" id="panel-login">
+        <div id="alert-login" class="alert"></div>
+        <div class="form-group">
+          <label class="form-label">Registration Number</label>
+          <div class="input-wrap">
+            <i class="ti ti-id-badge input-icon"></i>
+            <input class="form-input" type="text" id="loginReg" placeholder="e.g. IFM/BCOM/2024/042" autocomplete="username" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">EMS Password</label>
+          <div class="input-wrap">
+            <i class="ti ti-lock input-icon"></i>
+            <input class="form-input" type="password" id="loginPw" placeholder="••••••••" />
+            <button class="pw-toggle" onclick="togglePw('loginPw','loginPwIcon')"><i class="ti ti-eye" id="loginPwIcon"></i></button>
+          </div>
+        </div>
+        <button class="submit-btn" onclick="handleLogin()"><i class="ti ti-login"></i> SIGN IN</button>
+        <div class="link-row">
+          Forgot password? <button class="text-link" onclick="showForgot()">Reset here</button>
+        </div>
+      </div>
+
+      <!-- Student Register -->
+      <div class="panel" id="panel-register">
+        <div id="alert-register" class="alert"></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <div class="input-wrap">
+              <i class="ti ti-user input-icon"></i>
+              <input class="form-input" type="text" id="regName" placeholder="Amina Hassan" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Registration No.</label>
+            <div class="input-wrap">
+              <i class="ti ti-id-badge input-icon"></i>
+              <input class="form-input" type="text" id="regNum" placeholder="IFM/BCOM/2024/042" />
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <div class="input-wrap">
+            <i class="ti ti-mail input-icon"></i>
+            <input class="form-input" type="email" id="regEmail" placeholder="student@ifm.ac.tz" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="input-wrap">
+              <i class="ti ti-lock input-icon"></i>
+              <input class="form-input" type="password" id="regPw" placeholder="••••••••" />
+              <button class="pw-toggle" onclick="togglePw('regPw','regPwIcon')"><i class="ti ti-eye" id="regPwIcon"></i></button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <div class="input-wrap">
+              <i class="ti ti-lock input-icon"></i>
+              <input class="form-input" type="password" id="regPw2" placeholder="••••••••" />
+            </div>
+          </div>
+        </div>
+        <button class="submit-btn" onclick="handleRegister()"><i class="ti ti-user-plus"></i> CREATE ACCOUNT</button>
+        <div class="link-row">
+          Already have an account? <button class="text-link" onclick="switchAuth('login')">Sign in</button>
+        </div>
+      </div>
+
+      <!-- Forgot Password -->
+      <div class="panel" id="panel-forgot">
+        <p class="panel-title">Password Recovery</p>
+        <p class="panel-hint">Enter your registered email and we'll send a 6-digit OTP.</p>
+        <div id="alert-forgot" class="alert"></div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <div class="input-wrap">
+            <i class="ti ti-mail input-icon"></i>
+            <input class="form-input" type="email" id="recEmail" placeholder="student@ifm.ac.tz" />
+          </div>
+        </div>
+        <button class="submit-btn" onclick="handleSendOtp()"><i class="ti ti-send"></i> SEND OTP</button>
+        <div class="link-row"><button class="text-link" onclick="switchAuth('login')">&#8592; Back to Sign In</button></div>
+      </div>
+
+      <!-- OTP Verify -->
+      <div class="panel" id="panel-otp">
+        <p class="panel-title">Verify OTP</p>
+        <p class="panel-hint" id="otpHint">Enter the 6-digit code sent to your email.</p>
+        <div id="alert-otp" class="alert"></div>
+        <div class="otp-grid">
+          <input class="otp-box" maxlength="1" type="text" inputmode="numeric" />
+          <input class="otp-box" maxlength="1" type="text" inputmode="numeric" />
+          <input class="otp-box" maxlength="1" type="text" inputmode="numeric" />
+          <input class="otp-box" maxlength="1" type="text" inputmode="numeric" />
+          <input class="otp-box" maxlength="1" type="text" inputmode="numeric" />
+          <input class="otp-box" maxlength="1" type="text" inputmode="numeric" />
+        </div>
+        <button class="submit-btn" onclick="handleVerifyOtp()"><i class="ti ti-check"></i> VERIFY &amp; RESET</button>
+        <div class="link-row"><button class="text-link" onclick="showPanel('panel-forgot')">&#8592; Resend OTP</button></div>
+      </div>
+    </div><!-- /studentSection -->
+
+    <!-- ══════════════════════════════ ADMIN ══════════════════════════════ -->
+    <div id="adminSection" style="display:none;">
+      <div class="divider"><span>ADMINISTRATOR ACCESS</span></div>
+      <div id="alert-admin" class="alert"></div>
+      <div class="form-group">
+        <label class="form-label">Admin Username</label>
+        <div class="input-wrap">
+          <i class="ti ti-user-shield input-icon"></i>
+          <input class="form-input" type="text" id="adminUser" placeholder="admin@ifm.ac.tz" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="input-wrap">
+          <i class="ti ti-lock input-icon"></i>
+          <input class="form-input" type="password" id="adminPw" placeholder="••••••••" />
+          <button class="pw-toggle" onclick="togglePw('adminPw','adminPwIcon')"><i class="ti ti-eye" id="adminPwIcon"></i></button>
+        </div>
+      </div>
+      <button class="submit-btn" onclick="handleAdminLogin()"><i class="ti ti-login"></i> ADMIN SIGN IN</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="footer">
+  &copy; 2026 The Institute of Finance Management &mdash; Lost &amp; Found Management System &nbsp;|&nbsp; All Rights Reserved
+</div>
+
+<script>
+  const html = document.documentElement;
+
+  /* ── Theme ── */
+  function toggleTheme() {
+    const dark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', dark ? 'light' : 'dark');
+    document.getElementById('themeIcon').className = dark ? 'ti ti-moon' : 'ti ti-sun';
+    document.getElementById('themeLabel').textContent = dark ? 'Dark mode' : 'Light mode';
+  }
+
+  /* ── Role ── */
+  let currentRole = 'student';
+  function selectRole(role) {
+    currentRole = role;
+    document.getElementById('roleStudent').classList.toggle('active', role === 'student');
+    document.getElementById('roleAdmin').classList.toggle('active', role === 'admin');
+    document.getElementById('studentSection').style.display = role === 'student' ? 'block' : 'none';
+    document.getElementById('adminSection').style.display  = role === 'admin'   ? 'block' : 'none';
+    clearAlerts();
+  }
+
+  /* ── Auth tabs (login/register) ── */
+  function switchAuth(tab) {
+    clearAlerts();
+    if (tab === 'login') {
+      document.getElementById('tabLogin').classList.add('active');
+      document.getElementById('tabRegister').classList.remove('active');
+      showPanel('panel-login');
+    } else {
+      document.getElementById('tabRegister').classList.add('active');
+      document.getElementById('tabLogin').classList.remove('active');
+      showPanel('panel-register');
+    }
+  }
+
+  function showForgot() {
+    document.getElementById('tabLogin').classList.remove('active');
+    document.getElementById('tabRegister').classList.remove('active');
+    showPanel('panel-forgot');
+  }
+
+  /* ── Panels ── */
+  const STUDENT_PANELS = ['panel-login','panel-register','panel-forgot','panel-otp'];
+  function showPanel(id) {
+    STUDENT_PANELS.forEach(p => {
+      const el = document.getElementById(p);
+      if (el) el.classList.toggle('active', p === id);
+    });
+    clearAlerts();
+  }
+
+  /* ── Alerts ── */
+  function showAlert(id, msg, type) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.className = `alert alert-${type === 'error' ? 'error' : 'success'} show`;
+    el.innerHTML = `<i class="ti ${type === 'error' ? 'ti-alert-circle' : 'ti-circle-check'}"></i><span>${msg}</span>`;
+  }
+  function clearAlerts() {
+    document.querySelectorAll('.alert').forEach(a => { a.className = 'alert'; a.innerHTML = ''; });
+  }
+
+  /* ── Password toggle ── */
+  function togglePw(inputId, iconId) {
+    const inp = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
+    const show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    icon.className = show ? 'ti ti-eye-off' : 'ti ti-eye';
+  }
+
+  /* ── Student Login ── */
+  function handleLogin() {
+    const reg = document.getElementById('loginReg').value.trim();
+    const pw  = document.getElementById('loginPw').value;
+    if (!reg || !pw) { showAlert('alert-login','Please fill in all fields.','error'); return; }
+    // Demo: any credentials work → go to dashboard
+    showAlert('alert-login','Login successful! Redirecting…','success');
+    setTimeout(() => { window.location.href = 'dashboard.html'; }, 1200);
+  }
+
+  /* ── Student Register ── */
+  function handleRegister() {
+    const name  = document.getElementById('regName').value.trim();
+    const num   = document.getElementById('regNum').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const pw    = document.getElementById('regPw').value;
+    const pw2   = document.getElementById('regPw2').value;
+    if (!name || !num || !email || !pw) { showAlert('alert-register','All fields are required.','error'); return; }
+    if (pw !== pw2) { showAlert('alert-register','Passwords do not match.','error'); return; }
+    if (pw.length < 8) { showAlert('alert-register','Password must be at least 8 characters.','error'); return; }
+    showAlert('alert-register','Account created! Please sign in.','success');
+    setTimeout(() => switchAuth('login'), 1500);
+  }
+
+  /* ── Admin Login ── */
+  function handleAdminLogin() {
+    const user = document.getElementById('adminUser').value.trim();
+    const pw   = document.getElementById('adminPw').value;
+    if (!user || !pw) { showAlert('alert-admin','Please fill in all fields.','error'); return; }
+    showAlert('alert-admin','Admin access granted! Redirecting…','success');
+    setTimeout(() => { window.location.href = 'admin.html'; }, 1200);
+  }
+
+  /* ── Send OTP ── */
+  function handleSendOtp() {
+    const email = document.getElementById('recEmail').value.trim();
+    if (!email || !email.includes('@')) { showAlert('alert-forgot','Enter a valid email address.','error'); return; }
+    document.getElementById('otpHint').textContent = `A 6-digit code has been sent to ${email}`;
+    showPanel('panel-otp');
+    document.querySelector('.otp-box').focus();
+  }
+
+  /* ── OTP boxes ── */
+  document.querySelectorAll('.otp-box').forEach((box, i, boxes) => {
+    box.addEventListener('input', () => {
+      box.value = box.value.replace(/\D/g,'').slice(0,1);
+      if (box.value && i < boxes.length - 1) boxes[i+1].focus();
+    });
+    box.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !box.value && i > 0) boxes[i-1].focus();
+    });
+  });
+
+  /* ── Verify OTP ── */
+  function handleVerifyOtp() {
+    const otp = [...document.querySelectorAll('.otp-box')].map(b => b.value).join('');
+    if (otp.length < 6) { showAlert('alert-otp','Enter the complete 6-digit OTP.','error'); return; }
+    showAlert('alert-otp','Password reset successful! Please sign in.','success');
+    setTimeout(() => switchAuth('login'), 2000);
+  }
+</script>
+</body>
+</html>
